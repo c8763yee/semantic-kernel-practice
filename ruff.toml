@@ -1,0 +1,55 @@
+target-version = "py310"
+
+line-length = 100
+indent-width = 4
+[lint]
+select = [
+    "B",   # bugbear
+    "D",   # pydocstyle
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "I",   # isort
+    "PIE", # flake8-pie
+    "PTH", # flake8-pathlib
+    "PYI", # flake8-pyi
+    "UP",  # pyupgrade
+    "RUF", # ruff
+    "W",   # pycodestyle
+]
+
+ignore = [
+    "B905",   # `zip()` without an explicit `strict=` parameter
+    "D100",   # Missing docstring in public module
+    "D101",   # Missing docstring in public class
+    "D102",   # Missing docstring in public method
+    "D103",   # Missing docstring in public function
+    "D104",   # Missing docstring in public package
+    "D105",   # Missing docstring in magic method
+    "D106",   # Missing docstring in public nested class
+    "D107",   # Missing docstring in `__init__`
+    "D205",   # 1 blank line required between summary line and description
+    "D400",   # First line should end with a period
+    "D401",   # First line of docstring should be in imperative mood
+    "PTH100", # `os.path.abspath()` should be replaced by `Path.resolve()`
+    "PTH103", # `os.makedirs()` should be replaced by `Path.mkdir(parents=True)`
+    "PTH107", # `os.remove()` should be replaced by `Path.unlink()`
+    "PTH108", # `os.unlink()` should be replaced by `Path.unlink()`
+    "PTH109", # `os.getcwd()` should be replaced by `Path.cwd()`
+    "PTH110", # `os.path.exists()` should be replaced by `Path.exists()`
+    "PTH111", # `os.path.expanduser()` should be replaced by `Path.expanduser()`
+    "PTH112", # `os.path.isdir()` should be replaced by `Path.is_dir()`
+    "PTH113", # `os.path.isfile()` should be replaced by `Path.is_file()`
+    "PTH118", # `os.path.join()` should be replaced by `Path` with `/` operator
+    "PTH119", # `os.path.basename()` should be replaced by `Path.name`
+    "PTH120", # `os.path.dirname()` should be replaced by `Path.parent`
+    "PTH122", # `os.path.splitext()` should be replaced by `Path.suffix`, `Path.stem`, and `Path.parent`
+    "PTH123", # `open()` should be replaced by `Path.open()`
+    "PTH207", # Replace `glob` with `Path.glob` or `Path.rglob`
+    "RUF012", # mutable default values in class attributes
+]
+
+[format]
+indent-style = "space"
+quote-style = "double"
+skip-magic-trailing-comma = false
+docstring-code-format = true

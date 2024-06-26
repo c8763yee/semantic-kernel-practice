@@ -1,0 +1,14 @@
+{
+    "python.analysis.typeCheckingMode": "off",
+    "[python]": {
+        "diffEditor.ignoreTrimWhitespace": false,
+        "gitlens.codeLens.symbolScopes": [
+            "!Module"
+        ],
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "ruff.enable": true,
+    "taipyStudio.config.mainPythonFile": "semantic-function.py",
+    "taipyStudio.gUI.elementsFilePaths": []
+}
