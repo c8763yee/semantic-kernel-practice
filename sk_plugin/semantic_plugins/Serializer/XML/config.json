@@ -1,0 +1,22 @@
+{
+    "schema": 1,
+    "description": "Seralizer input to XML format with indentation",
+    "execution_settings": {
+        "default": {
+            "max_tokens": 500,
+            "temperature": 0.9
+        }
+    },
+    "input_variables": [
+        {
+            "name": "input",
+            "description": "Input text to be serialized",
+            "default": ""
+        },
+        {
+            "name": "indent",
+            "description": "Indentation level for XML output",
+            "default": "2"
+        }
+    ]
+}

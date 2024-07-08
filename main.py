@@ -1,6 +1,7 @@
 import asyncio
 import json
 from importlib import import_module
+from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
@@ -16,9 +17,17 @@ from semantic_kernel.functions.kernel_arguments import KernelArguments
 from semantic_kernel.functions.kernel_plugin import KernelPlugin
 from semantic_kernel.kernel import Kernel
 from semantic_kernel.kernel_types import AI_SERVICE_CLIENT_TYPE
+from semantic_kernel.planners import SequentialPlanner
 from semantic_kernel.services.ai_service_selector import AIServiceSelector
 
-import sk_plugin.KernelPlugins as KernelPlugins
+import loggers
+import sk_plugin.kernel_plugins as kernel_plugins
+
+loggers.setup_package_logger("sk_plugin", file_level=loggers.NOTSET, console_level=loggers.INFO)
+semantic_plugins_dir: Path = Path(__file__).parent / "sk_plugin" / "semantic_plugins"
+semantic_plugins_str: list[str] = [
+    dirs.name for dirs in semantic_plugins_dir.iterdir() if dirs.is_dir()
+]
 
 load_dotenv()
 
@@ -35,9 +44,12 @@ class CustomChatHistory(ChatHistory):
     def to_dict(self) -> list[dict] | dict:
         return [message.to_dict() for message in self.messages]
 
+    def update_user_message(self, new_message: str, index: int = 0) -> None:
+        self.messages[index].content = new_message
+
 
 class CustomKernel(Kernel):
-    history: ChatHistory = CustomChatHistory()
+    history: ChatHistory = CustomChatHistory(messages=[])
 
     def __init__(
         self,
@@ -61,7 +73,9 @@ class CustomKernel(Kernel):
         # initialize system prompt
         self.history.add_system_message(SYSTEM_MESSAGE)
 
-    def handle_builtin_command(self, command: str) -> tuple[Kernel | bool]:
+        # import semantic plugin
+
+    def handle_builtin_command(self, command: str) -> bool:
         """Builtin behavior for the command.
 
         1. exit
@@ -81,25 +95,45 @@ class CustomKernel(Kernel):
                 else:
                     # Assuming there's a method to update a message in history
                     # This line might need adjustment based on how ChatHistory is implemented
-                    self.history.update_user_message(new_url)
+                    self.history.update_user_message(new_url, 1)
                 return True
             case _:
                 return False
 
+    def import_semantic_plugin(self, plugin_dir: Path) -> dict[str, KernelPlugin] | None:
+        plugins = {}
+        for dirs in plugin_dir.iterdir():
+            if dirs.is_dir() is False:
+                continue
+
+            plugin_name = dirs.name
+
+            plugin = kernel.add_plugin(parent_directory=str(plugin_dir), plugin_name=plugin_name)
+            plugins[plugin_name] = plugin
+        return plugins
+
+    def setup_planner(
+        self, planner_cls: type[SequentialPlanner], service_id: str, **kwargs: Any
+    ) -> SequentialPlanner:
+        self.planner = planner_cls(kernel=self, service_id=service_id, **kwargs)
+        return self.planner
+
 
 def package_str_to_kernel_plugin(plugin_name: str) -> KernelPlugin:
-    classes = import_module(f".KernelPlugins.{plugin_name}", package="sk_plugin")
+    kernel_modules = import_module(".kernel_plugins", package="sk_plugin")
+    classes = getattr(kernel_modules, plugin_name, None)
+    if classes is None:
+        raise ValueError(f"Plugin {plugin_name} not found")
     return KernelPlugin.from_object(plugin_name=classes.__name__, plugin_instance=classes())
 
 
 # define the plugins and services
-services: list[AI_SERVICE_CLIENT_TYPE] = [OpenAIChatCompletion(service_id="youtube_dl")]
-plugins: list[KernelPlugin] = list(map(package_str_to_kernel_plugin, KernelPlugins.__all__))
-kernel = CustomKernel(services=services, plugins=plugins)
+services: list = [OpenAIChatCompletion(service_id="main")]
+kernel_plugin: list[KernelPlugin] = list(map(package_str_to_kernel_plugin, kernel_plugins.__all__))
 
 
-async def main():
-    service_id = "youtube_dl"
+async def main(kernel: Kernel):
+    service_id = "main"
 
     # get chat completion object
     chat_completion: OpenAIChatCompletion = kernel.get_service(service_id=service_id)
@@ -109,14 +143,19 @@ async def main():
 
     # apply plugin function call behavior
     execution_setting.function_call_behavior = FunctionCallBehavior.EnableFunctions(
-        auto_invoke=True, filters={"included_plugins": KernelPlugins.__all__}
+        # auto_invoke=True, filters={"included_plugins": kernel_plugins.__all__}
+        auto_invoke=True,
+        filters={"included_plugins": [*kernel_plugins.__all__, *semantic_plugins_str]},
     )
+    included_plugins = ", ".join([*kernel_plugins.__all__, *semantic_plugins_str])
+    print(f"included_plugins: {included_plugins}")
+    arguments: KernelArguments = KernelArguments(settings=execution_setting)
 
     # invoke the kernel and get the result from user input
     url = input("Please provide a youtube video URL: ")
     kernel.history.add_user_message(url)
     while True:
-        user_input = input("What do you want to do for this video?: ")
+        user_input = input("What do you want to do?: ")
         if kernel.handle_builtin_command(user_input) is True:
             continue
 
@@ -124,9 +163,9 @@ async def main():
         result = (
             await chat_completion.get_chat_message_contents(
                 chat_history=kernel.history,
-                settings=execution_setting,
                 kernel=kernel,
-                arguments=KernelArguments(),
+                settings=execution_setting,
+                arguments=arguments,
             )
         )[0]
         usage_text = "Usage: {text}".format(
@@ -139,7 +178,9 @@ async def main():
 
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        kernel = CustomKernel(services=services, plugins=kernel_plugin)
+        kernel.import_semantic_plugin(Path(__file__).parent / "sk_plugin" / "semantic_plugins")
+        asyncio.run(main(kernel=kernel))
     except Exception as exc:
         print(f"An error occurred: {exc!r}")
     finally:

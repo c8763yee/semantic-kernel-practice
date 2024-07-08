@@ -11,6 +11,7 @@ python = ">=3.10, <3.13"
 semantic-kernel = { version = "^1.1.1", extras = ["all"] }
 ipykernel = "^6.29.4"
 yt-dlp = "^2024.5.27"
+matplotlib = "^3.9.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.9"
