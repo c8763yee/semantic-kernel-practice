@@ -532,13 +532,13 @@ files = [
 
 [[package]]
 name = "certifi"
-version = "2024.6.2"
+version = "2024.7.4"
 description = "Python package for providing Mozilla's CA Bundle."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "certifi-2024.6.2-py3-none-any.whl", hash = "sha256:ddc6c8ce995e6987e7faf5e3f1b02b302836a0e5d98ece18392cb1a36c72ad56"},
-    {file = "certifi-2024.6.2.tar.gz", hash = "sha256:3cd43f1c6fa7dedc5899d69d3ad0398fd018ad1a17fba83ddaf78aa46c747516"},
+    {file = "certifi-2024.7.4-py3-none-any.whl", hash = "sha256:c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90"},
+    {file = "certifi-2024.7.4.tar.gz", hash = "sha256:5a1e7645bc0ec61a09e26c36f6106dd4cf40c6db3a1fb6352b0244e7fb057c7b"},
 ]
 
 [[package]]
@@ -2598,6 +2598,7 @@ python-versions = ">=3.7"
 files = [
     {file = "milvus_lite-2.4.7-py3-none-macosx_10_9_x86_64.whl", hash = "sha256:c828190118b104b05b8c8e0b5a4147811c86b54b8fb67bc2e726ad10fc0b544e"},
     {file = "milvus_lite-2.4.7-py3-none-macosx_11_0_arm64.whl", hash = "sha256:e1537633c39879714fb15082be56a4b97f74c905a6e98e302ec01320561081af"},
+    {file = "milvus_lite-2.4.7-py3-none-manylinux2014_aarch64.whl", hash = "sha256:fcb909d38c83f21478ca9cb500c84264f988c69f62715ae9462e966767fb76dd"},
     {file = "milvus_lite-2.4.7-py3-none-manylinux2014_x86_64.whl", hash = "sha256:f016474d663045787dddf1c3aad13b7d8b61fd329220318f858184918143dcbf"},
 ]
 
@@ -6692,13 +6693,13 @@ multidict = ">=4.0"
 
 [[package]]
 name = "yt-dlp"
-version = "2024.5.27"
+version = "2024.7.7"
 description = "A feature-rich command-line audio/video downloader"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "yt_dlp-2024.5.27-py3-none-any.whl", hash = "sha256:5dbedb7610ae9440cc44e744f528e078828142bbe09af950cf7e99ce69c866d9"},
-    {file = "yt_dlp-2024.5.27.tar.gz", hash = "sha256:3566c0de240d0cd3d1c2285ce655f72ca38dfc618d634d46818b00d89d5288be"},
+    {file = "yt_dlp-2024.7.7-py3-none-any.whl", hash = "sha256:2e90abeadc0199c787b1b4a3e0a1c8ed9d7c9f824f58da88467a1b30ed745e07"},
+    {file = "yt_dlp-2024.7.7.tar.gz", hash = "sha256:2a0f89423d25d47db949925db5bd2c6f651960ae93dbbf5b3ed61cf3a4078ce5"},
 ]
 
 [package.dependencies]
@@ -6707,18 +6708,18 @@ brotlicffi = {version = "*", markers = "implementation_name != \"cpython\""}
 certifi = "*"
 mutagen = "*"
 pycryptodomex = "*"
-requests = ">=2.31.0,<3"
+requests = ">=2.32.2,<3"
 urllib3 = ">=1.26.17,<3"
 websockets = ">=12.0"
 
 [package.extras]
-build = ["build", "hatchling", "pip", "setuptools (>=66.1.0,<70)", "wheel"]
+build = ["build", "hatchling", "pip", "setuptools", "wheel"]
 curl-cffi = ["curl-cffi (==0.5.10)"]
-dev = ["autopep8 (>=2.0,<3.0)", "pre-commit", "pytest (>=8.1,<9.0)", "ruff (>=0.4.4,<0.5.0)"]
-py2exe = ["py2exe (>=0.12)", "requests (==2.31.*)"]
-pyinstaller = ["pyinstaller (==5.13.2)", "pyinstaller (>=6.3)"]
+dev = ["autopep8 (>=2.0,<3.0)", "pre-commit", "pytest (>=8.1,<9.0)", "ruff (>=0.5.0,<0.6.0)"]
+py2exe = ["py2exe (>=0.12)"]
+pyinstaller = ["pyinstaller (>=6.7.0)"]
 secretstorage = ["cffi", "secretstorage"]
-static-analysis = ["autopep8 (>=2.0,<3.0)", "ruff (>=0.4.4,<0.5.0)"]
+static-analysis = ["autopep8 (>=2.0,<3.0)", "ruff (>=0.5.0,<0.6.0)"]
 test = ["pytest (>=8.1,<9.0)"]
 
 [[package]]
@@ -6739,4 +6740,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "a1a25a540b91af0ee5a9c6d4d75a5c597bdf13ec1a0e08d1c680fe35510e1442"
+content-hash = "65724277c668a332084dbe7a396bbb7110f205eab5ba49bee8d1d1db2c13f35d"
